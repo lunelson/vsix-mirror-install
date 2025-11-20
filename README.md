@@ -37,7 +37,7 @@ Run the script with the `--serve` flag to start the server:
 python3 local_marketplace.py --serve
 ```
 
-The server will start on `http://localhost:3000`.
+The server will start on `http://localhost:6789`.
 
 ### 3. Configure Your IDE
 
@@ -49,11 +49,11 @@ For **Cursor**, you can typically configure this in your settings (UI or JSON):
 2.  Search for "Marketplace".
 3.  Set the **Extension Gallery Service URL** to:
     ```
-    http://localhost:3000/extensionquery
+    http://localhost:6789/marketplace/extensionquery
     ```
 4.  (Optional) Set **Extension Url Template** to:
     ```
-    http://localhost:3000/extensions
+    http://localhost:6789/marketplace/extensions
     ```
 
 Now, when you search for extensions in Cursor, it will query your local marketplace.

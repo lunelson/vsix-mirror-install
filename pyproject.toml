@@ -1,0 +1,9 @@
+[project]
+name = "my-vsix-marketplace"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "semantic-version>=2.10.0",
+]

@@ -16,7 +16,7 @@ from typing import Dict, List, Any, Optional
 EXTENSIONS_DIR = Path("extensions")
 GALLERY_FILE = Path("gallery.json")
 MS_MARKETPLACE_API = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery"
-PORT = 3000
+PORT = 6789
 
 def get_installed_extensions() -> List[Dict[str, str]]:
     """
@@ -207,10 +207,17 @@ def sync_extensions():
 
 class MarketplaceHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
-        if self.path == '/extensionquery':
+        if self.path == '/marketplace/extensionquery':
             self.handle_extension_query()
         else:
             self.send_error(404)
+
+    def translate_path(self, path):
+        # Handle VSIX downloads with /marketplace prefix
+        if path.startswith('/marketplace/extensions/'):
+            # Strip /marketplace to map to local ./extensions directory
+            path = path.replace('/marketplace/extensions/', '/extensions/')
+        return super().translate_path(path)
 
     def handle_extension_query(self):
         content_length = int(self.headers.get('Content-Length', 0))
@@ -244,7 +251,7 @@ class MarketplaceHandler(http.server.SimpleHTTPRequestHandler):
 
                         # Construct the download URL
                         host = self.headers.get('Host', f'localhost:{PORT}')
-                        base_url = f"http://{host}/extensions"
+                        base_url = f"http://{host}/marketplace/extensions"
                         asset_uri = f"{base_url}/{item['vsix_path']}"
 
                         # We need to return the structure VS Code expects.
