@@ -1,6 +1,6 @@
-# Local VS Code Extension Mirror
+# VSIX Mirror Install
 
-Keep a local mirror of your VS Code extensions and bulk-install them into VS Code forks (Cursor, Antigravity, etc.) without running a gallery service.
+Keep a local mirror of your VS Code extensions and bulk-install them into VS Code forks (Cursor, Antigravity, etc.).
 
 ## Features
 
