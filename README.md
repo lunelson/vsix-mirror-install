@@ -4,8 +4,7 @@ Keep a local mirror of your VS Code extensions and bulk-install them into VS Cod
 
 ## Features
 
--   **Sync**: `sync_vsix.py` downloads VSIX files from the Microsoft VS Code Marketplace for your installed extensions (or a hard-coded list).
--   **Multi-market**: Maintains one VSIX directory per IDE fork (e.g. `vsix-cursor`, `vsix-agy`) and picks the newest engine-compatible version for each.
+-   **Sync based on VS Code**: `sync_vsix.py` downloads VSIX files from the Microsoft VS Code Marketplace based on your currently installed extensions in `code` (or a hard-coded list); save them as `.vsix` files in a sibling directory post-fixed by IDE name (e.g. `vsix-cursor`, `vsix-agy`), taking the newest engine-compatible version for each.
 -   **Bulk install**: `bulk_install_vsix.py` installs only missing or older versions into an IDE via its CLI (with `--force`/`--update-only` controls).
 -   **Private**: Everything stays local; set your IDE’s marketplace URL to `http://0.0.0.0/` to avoid remote galleries.
 
@@ -59,9 +58,6 @@ uv run bulk_install_vsix.py -m cursor --dry-run        # see plan
 uv run bulk_install_vsix.py -m cursor                  # install missing/older
 uv run bulk_install_vsix.py -m cursor --force          # override newer installs
 uv run bulk_install_vsix.py -m cursor --update-only    # only update existing IDs
-
-# Another IDE CLI example
-uv run bulk_install_vsix.py -m code --dry-run
 ```
 
 ## Troubleshooting
