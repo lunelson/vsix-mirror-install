@@ -5,7 +5,7 @@ Keep a local mirror of your VS Code extensions and bulk-install them into VS Cod
 ## Features
 
 -   **Sync based on VS Code**: `sync_vsix.py` downloads VSIX files from the Microsoft VS Code Marketplace based on your currently installed extensions in `code` (or a hard-coded list); save them as `.vsix` files in a sibling directory post-fixed by IDE name (e.g. `vsix-cursor`, `vsix-agy`), taking the newest engine-compatible version for each.
--   **Bulk install**: `bulk_install_vsix.py` installs only missing or older versions into an IDE via its CLI (with `--force`/`--update-only` controls).
+-   **Bulk install**: `bulk_install_vsix.py` updates existing extensions by default, or installs everything with `--force`.
 -   **Private**: Everything stays local; VSIX files are installed directly via IDE CLIs.
 
 ## Prerequisites
@@ -31,8 +31,8 @@ source .venv/bin/activate
 
 By default `sync_vsix.py` knows about two IDEs:
 
--   `cursor` (VS Code engine `1.105.1`)
--   `agy` (Google Antigravity, engine `1.104.0`)
+-   `cursor` 
+-   `agy` 
 
 Run:
 
@@ -49,15 +49,14 @@ uv run sync_vsix.py -m agy
 
 This will download compatible VSIX files into `vsix-<market>` and remove stale ones.
 
-### 3) Bulk-install VSIX files directly (no gallery)
+### 3) Bulk-install VSIX files directly
 
-Install only missing or older versions into an IDE via its CLI. Default VSIX dir is `vsix-<cli>`.
+By default, only updates existing extensions. Use `--force` to install everything (new extensions + updates). Default VSIX dir is `vsix-<cli>`.
 
 ```bash
 uv run bulk_install_vsix.py -m cursor --dry-run        # see plan
-uv run bulk_install_vsix.py -m cursor                  # install missing/older
-uv run bulk_install_vsix.py -m cursor --force          # override newer installs
-uv run bulk_install_vsix.py -m cursor --update-only    # only update existing IDs
+uv run bulk_install_vsix.py -m cursor                  # only update existing extensions
+uv run bulk_install_vsix.py -m cursor --force          # install everything (new + updates)
 ```
 
 ## Troubleshooting

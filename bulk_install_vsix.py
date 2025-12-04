@@ -2,7 +2,8 @@
 """Bulk-install VSIX files only when needed.
 
 Compares installed extensions to the VSIX files in a market directory and
-installs only those that are missing or older than the mirrored version.
+installs only updates to existing extensions by default. Use --force to install
+everything (new extensions + updates).
 """
 
 from __future__ import annotations
@@ -76,7 +77,7 @@ def install_vsix(cli: str, path: Path, extra_args: list[str]) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Install VSIX files from a market dir if not present or older."
+        description="Install VSIX files from a market dir. By default, only updates existing extensions. Use --force to install everything."
     )
     parser.add_argument(
         "market_dir",
@@ -93,17 +94,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Pass --force to the CLI install command.",
+        help="Install everything: new extensions and updates (default: only update existing extensions).",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Show what would be installed without making changes.",
-    )
-    parser.add_argument(
-        "--update-only",
-        action="store_true",
-        help="Only install if an extension with the same ID is already installed.",
     )
 
     args = parser.parse_args(argv)
@@ -132,17 +128,29 @@ def main(argv: list[str] | None = None) -> int:
         ext_id, vsix_ver = parsed
         current_ver = installed.get(ext_id.lower())
         if not current_ver:
-            if args.update_only:
-                print(f"[SKIP] Not installed, update-only enabled: {ext_id}")
-                continue
-            planned.append((ext_id, vsix_ver, path))
+            # Extension not installed
+            if args.force:
+                planned.append((ext_id, vsix_ver, path))
+            else:
+                print(f"[SKIP] Not installed (use --force to install new extensions): {ext_id}")
             continue
-        cmp = compare_versions(vsix_ver, current_ver)
-        if cmp > 0:
+        # Extension is installed - check if update needed
+        if args.force:
+            # Force mode: install regardless of version
             planned.append((ext_id, vsix_ver, path))
+        else:
+            # Default: only update if VSIX version is newer
+            cmp = compare_versions(vsix_ver, current_ver)
+            if cmp > 0:
+                planned.append((ext_id, vsix_ver, path))
+            else:
+                print(f"[SKIP] Already installed at same or newer version: {ext_id}@{current_ver}")
 
     if not planned:
-        print("No installs needed; all VSIX files are already installed at same or newer versions.")
+        if args.force:
+            print("No installs needed.")
+        else:
+            print("No installs needed; all VSIX files are already installed at same or newer versions.")
         return 0
 
     extra_args: list[str] = []
