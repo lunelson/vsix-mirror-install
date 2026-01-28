@@ -1,6 +1,7 @@
 import * as p from '@clack/prompts';
 import { parseArgs } from 'node:util';
 import { runSync } from './commands/sync.js';
+import { runInstall } from './commands/install.js';
 
 const COMMANDS = ['sync', 'install', 'status', 'detect'] as const;
 type Command = (typeof COMMANDS)[number];
@@ -85,7 +86,14 @@ async function main(): Promise<void> {
       await runSync({ to: args.to });
       break;
     case 'install':
-      p.log.info('Install command not yet implemented');
+      await runInstall({
+        to: args.to,
+        dryRun: args.dryRun,
+        installMissing: args.installMissing,
+        syncRemovals: args.syncRemovals,
+        syncDisabled: args.syncDisabled,
+        force: args.force,
+      });
       break;
     case 'status':
       p.log.info('Status command not yet implemented');
