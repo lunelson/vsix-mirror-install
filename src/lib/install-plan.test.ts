@@ -4,10 +4,7 @@ import type { Extension, SyncedVSIX } from '../types.js';
 
 describe('install-plan', () => {
   const defaultOptions = {
-    installMissing: false,
     syncRemovals: false,
-    syncDisabled: false,
-    force: false,
   };
 
   describe('generateInstallPlan', () => {
@@ -21,26 +18,13 @@ describe('install-plan', () => {
       expect(plan).toHaveLength(0);
     });
 
-    it('skips missing extensions by default', () => {
+    it('installs missing extensions', () => {
       const installed: Extension[] = [];
       const synced: SyncedVSIX[] = [
         { extensionId: 'new.ext', version: '1.0.0', path: '/path', sourceDisabled: false },
       ];
 
       const plan = generateInstallPlan(installed, synced, defaultOptions);
-      expect(plan).toHaveLength(0);
-    });
-
-    it('installs missing extensions with --install-missing', () => {
-      const installed: Extension[] = [];
-      const synced: SyncedVSIX[] = [
-        { extensionId: 'new.ext', version: '1.0.0', path: '/path', sourceDisabled: false },
-      ];
-
-      const plan = generateInstallPlan(installed, synced, {
-        ...defaultOptions,
-        installMissing: true,
-      });
 
       expect(plan).toHaveLength(1);
       expect(plan[0]).toMatchObject({
@@ -48,6 +32,19 @@ describe('install-plan', () => {
         extensionId: 'new.ext',
         version: '1.0.0',
       });
+    });
+
+    it('installs and disables new extension when source is disabled', () => {
+      const installed: Extension[] = [];
+      const synced: SyncedVSIX[] = [
+        { extensionId: 'new.ext', version: '1.0.0', path: '/path', sourceDisabled: true },
+      ];
+
+      const plan = generateInstallPlan(installed, synced, defaultOptions);
+
+      expect(plan).toHaveLength(2);
+      expect(plan[0]?.type).toBe('install');
+      expect(plan[1]?.type).toBe('disable');
     });
 
     it('updates outdated extensions', () => {
@@ -76,6 +73,32 @@ describe('install-plan', () => {
       expect(plan).toHaveLength(0);
     });
 
+    it('preserves target disabled state on update (does not re-enable)', () => {
+      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: true }];
+      const synced: SyncedVSIX[] = [
+        { extensionId: 'test.ext', version: '2.0.0', path: '/path', sourceDisabled: false },
+      ];
+
+      const plan = generateInstallPlan(installed, synced, defaultOptions);
+
+      expect(plan).toHaveLength(1);
+      expect(plan[0]?.type).toBe('update');
+      // No enable action - target's disabled state is preserved
+    });
+
+    it('preserves target enabled state on update (does not disable)', () => {
+      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: false }];
+      const synced: SyncedVSIX[] = [
+        { extensionId: 'test.ext', version: '2.0.0', path: '/path', sourceDisabled: true },
+      ];
+
+      const plan = generateInstallPlan(installed, synced, defaultOptions);
+
+      expect(plan).toHaveLength(1);
+      expect(plan[0]?.type).toBe('update');
+      // No disable action - target's enabled state is preserved
+    });
+
     it('skips removals by default', () => {
       const installed: Extension[] = [{ id: 'orphan.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [];
@@ -89,7 +112,6 @@ describe('install-plan', () => {
       const synced: SyncedVSIX[] = [];
 
       const plan = generateInstallPlan(installed, synced, {
-        ...defaultOptions,
         syncRemovals: true,
       });
 
@@ -98,76 +120,6 @@ describe('install-plan', () => {
         type: 'uninstall',
         extensionId: 'orphan.ext',
       });
-    });
-
-    it('disables extensions with --sync-disabled', () => {
-      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: false }];
-      const synced: SyncedVSIX[] = [
-        { extensionId: 'test.ext', version: '1.0.0', path: '/path', sourceDisabled: true },
-      ];
-
-      const plan = generateInstallPlan(installed, synced, {
-        ...defaultOptions,
-        syncDisabled: true,
-      });
-
-      expect(plan).toHaveLength(1);
-      expect(plan[0]).toMatchObject({
-        type: 'disable',
-        extensionId: 'test.ext',
-      });
-    });
-
-    it('enables extensions with --sync-disabled', () => {
-      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: true }];
-      const synced: SyncedVSIX[] = [
-        { extensionId: 'test.ext', version: '1.0.0', path: '/path', sourceDisabled: false },
-      ];
-
-      const plan = generateInstallPlan(installed, synced, {
-        ...defaultOptions,
-        syncDisabled: true,
-      });
-
-      expect(plan).toHaveLength(1);
-      expect(plan[0]).toMatchObject({
-        type: 'enable',
-        extensionId: 'test.ext',
-      });
-    });
-
-    it('--force enables all options', () => {
-      const installed: Extension[] = [{ id: 'existing.ext', version: '1.0.0', disabled: false }];
-      const synced: SyncedVSIX[] = [
-        { extensionId: 'new.ext', version: '1.0.0', path: '/new', sourceDisabled: true },
-      ];
-
-      const plan = generateInstallPlan(installed, synced, {
-        ...defaultOptions,
-        force: true,
-      });
-
-      const types = plan.map((a) => a.type);
-      expect(types).toContain('install');
-      expect(types).toContain('disable');
-      expect(types).toContain('uninstall');
-    });
-
-    it('installs and disables new disabled extension with --install-missing and --sync-disabled', () => {
-      const installed: Extension[] = [];
-      const synced: SyncedVSIX[] = [
-        { extensionId: 'new.ext', version: '1.0.0', path: '/path', sourceDisabled: true },
-      ];
-
-      const plan = generateInstallPlan(installed, synced, {
-        ...defaultOptions,
-        installMissing: true,
-        syncDisabled: true,
-      });
-
-      expect(plan).toHaveLength(2);
-      expect(plan[0]?.type).toBe('install');
-      expect(plan[1]?.type).toBe('disable');
     });
   });
 

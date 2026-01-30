@@ -10,10 +10,7 @@ import { generateInstallPlan, describeAction } from '../lib/install-plan.js';
 interface InstallOptions {
   to: string[];
   dryRun: boolean;
-  installMissing: boolean;
   syncRemovals: boolean;
-  syncDisabled: boolean;
-  force: boolean;
 }
 
 function executeCliCommand(cli: string, args: string[]): boolean {
@@ -127,10 +124,7 @@ export async function runInstall(options: InstallOptions): Promise<void> {
   const targetExtensions = getExtensionsWithState(targetIDE.cli, targetIDE.dataFolderName);
 
   const plan = generateInstallPlan(targetExtensions, cachedVsix, {
-    installMissing: options.installMissing,
     syncRemovals: options.syncRemovals,
-    syncDisabled: options.syncDisabled,
-    force: options.force,
   });
 
   if (plan.length === 0) {

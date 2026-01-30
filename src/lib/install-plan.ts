@@ -2,10 +2,7 @@ import type { Extension, SyncedVSIX, InstallAction } from '../types.js';
 import { isNewerVersion } from './semver.js';
 
 export interface PlanOptions {
-  installMissing: boolean;
   syncRemovals: boolean;
-  syncDisabled: boolean;
-  force: boolean;
 }
 
 export function generateInstallPlan(
@@ -17,32 +14,29 @@ export function generateInstallPlan(
   const installedMap = new Map(installedExtensions.map((e) => [e.id, e]));
   const syncedMap = new Map(syncedVsix.map((v) => [v.extensionId, v]));
 
-  const effectiveInstallMissing = options.force || options.installMissing;
-  const effectiveSyncRemovals = options.force || options.syncRemovals;
-  const effectiveSyncDisabled = options.force || options.syncDisabled;
-
+  // Install missing extensions and update outdated ones
   for (const vsix of syncedVsix) {
     const installed = installedMap.get(vsix.extensionId);
 
     if (!installed) {
-      if (effectiveInstallMissing) {
-        actions.push({
-          type: 'install',
-          extensionId: vsix.extensionId,
-          version: vsix.version,
-          vsixPath: vsix.path,
-        });
+      // Fresh install: copy source's disabled state
+      actions.push({
+        type: 'install',
+        extensionId: vsix.extensionId,
+        version: vsix.version,
+        vsixPath: vsix.path,
+      });
 
-        if (effectiveSyncDisabled && vsix.sourceDisabled) {
-          actions.push({
-            type: 'disable',
-            extensionId: vsix.extensionId,
-          });
-        }
+      if (vsix.sourceDisabled) {
+        actions.push({
+          type: 'disable',
+          extensionId: vsix.extensionId,
+        });
       }
       continue;
     }
 
+    // Update: preserve target's current disabled state (no enable/disable action)
     if (isNewerVersion(vsix.version, installed.version)) {
       actions.push({
         type: 'update',
@@ -52,23 +46,10 @@ export function generateInstallPlan(
         currentVersion: installed.version,
       });
     }
-
-    if (effectiveSyncDisabled) {
-      if (vsix.sourceDisabled && !installed.disabled) {
-        actions.push({
-          type: 'disable',
-          extensionId: vsix.extensionId,
-        });
-      } else if (!vsix.sourceDisabled && installed.disabled) {
-        actions.push({
-          type: 'enable',
-          extensionId: vsix.extensionId,
-        });
-      }
-    }
   }
 
-  if (effectiveSyncRemovals) {
+  // Optionally remove extensions that are no longer in source
+  if (options.syncRemovals) {
     for (const installed of installedExtensions) {
       if (!syncedMap.has(installed.id)) {
         actions.push({

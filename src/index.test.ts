@@ -42,29 +42,14 @@ describe('parseCliArgs', () => {
     expect(args.to).toEqual(['cursor', 'windsurf']);
   });
 
-  it('parses --force flag', () => {
-    const args = parseCliArgs(['install', '--force']);
-    expect(args.force).toBe(true);
-  });
-
   it('parses --dry-run flag', () => {
     const args = parseCliArgs(['install', '--dry-run']);
     expect(args.dryRun).toBe(true);
   });
 
-  it('parses --install-missing flag', () => {
-    const args = parseCliArgs(['install', '--install-missing']);
-    expect(args.installMissing).toBe(true);
-  });
-
   it('parses --sync-removals flag', () => {
     const args = parseCliArgs(['install', '--sync-removals']);
     expect(args.syncRemovals).toBe(true);
-  });
-
-  it('parses --sync-disabled flag', () => {
-    const args = parseCliArgs(['install', '--sync-disabled']);
-    expect(args.syncDisabled).toBe(true);
   });
 
   it('parses -h help flag', () => {
@@ -78,10 +63,10 @@ describe('parseCliArgs', () => {
   });
 
   it('parses combined flags', () => {
-    const args = parseCliArgs(['install', '--to', 'cursor', '--force', '--dry-run']);
+    const args = parseCliArgs(['install', '--to', 'cursor', '--sync-removals', '--dry-run']);
     expect(args.command).toBe('install');
     expect(args.to).toEqual(['cursor']);
-    expect(args.force).toBe(true);
+    expect(args.syncRemovals).toBe(true);
     expect(args.dryRun).toBe(true);
   });
 });

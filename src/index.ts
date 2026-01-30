@@ -18,11 +18,8 @@ type Command = (typeof COMMANDS)[number];
 interface ParsedArgs {
   command: Command | null;
   to: string[];
-  force: boolean;
   dryRun: boolean;
-  installMissing: boolean;
   syncRemovals: boolean;
-  syncDisabled: boolean;
   help: boolean;
   quiet: boolean;
 }
@@ -32,11 +29,8 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
     args: argv,
     options: {
       to: { type: 'string', multiple: true, default: [] },
-      force: { type: 'boolean', default: false },
       'dry-run': { type: 'boolean', default: false },
-      'install-missing': { type: 'boolean', default: false },
       'sync-removals': { type: 'boolean', default: false },
-      'sync-disabled': { type: 'boolean', default: false },
       help: { type: 'boolean', short: 'h', default: false },
       quiet: { type: 'boolean', short: 'q', default: false },
     },
@@ -49,11 +43,8 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
   return {
     command,
     to: values.to ?? [],
-    force: values.force ?? false,
     dryRun: values['dry-run'] ?? false,
-    installMissing: values['install-missing'] ?? false,
     syncRemovals: values['sync-removals'] ?? false,
-    syncDisabled: values['sync-disabled'] ?? false,
     help: values.help ?? false,
     quiet: values.quiet ?? false,
   };
@@ -76,10 +67,7 @@ Commands:
 Options:
   --to <ide>         Target IDE(s) (cursor, antigravity, windsurf)
   --dry-run          Show what would be done without doing it
-  --install-missing  Install extensions not present in fork
   --sync-removals    Uninstall extensions in fork not in VS Code
-  --sync-disabled    Match VS Code's disabled state in fork
-  --force            Enable all sync options (full sync)
   -q, --quiet        Suppress banner output
   -h, --help         Show this help message
 `);
@@ -117,10 +105,7 @@ async function main(): Promise<void> {
       await runInstall({
         to: args.to,
         dryRun: args.dryRun,
-        installMissing: args.installMissing,
         syncRemovals: args.syncRemovals,
-        syncDisabled: args.syncDisabled,
-        force: args.force,
       });
       break;
     case 'status':
