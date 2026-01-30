@@ -1,14 +1,9 @@
-import cfonts from 'cfonts';
+// Pre-generated banner (cfonts tiny/candy)
+const BANNER =
+  "\n\u001b[31m \u001b[39m\u001b[93m█ █\u001b[39m\u001b[95m \u001b[39m\u001b[36m█▀▀\u001b[39m\u001b[32m \u001b[39m\u001b[35m█\u001b[39m\u001b[93m \u001b[39m\u001b[95m▀▄▀\u001b[39m\u001b[31m \u001b[39m\u001b[96m▄▄\u001b[39m\u001b[33m \u001b[39m\u001b[96m█▄▄\u001b[39m\u001b[94m \u001b[39m\u001b[91m█▀█\u001b[39m\u001b[31m \u001b[39m\u001b[95m█\u001b[39m\u001b[91m \u001b[39m\u001b[94m█▀▄\u001b[39m\u001b[95m \u001b[39m\u001b[94m█▀▀\u001b[39m\u001b[96m \u001b[39m\u001b[93m█▀▀\u001b[39m\n\u001b[93m \u001b[39m\u001b[33m▀▄▀\u001b[39m\u001b[92m \u001b[39m\u001b[36m▄▄█\u001b[39m\u001b[94m \u001b[39m\u001b[31m█\u001b[39m\u001b[31m \u001b[39m\u001b[36m█ █\u001b[39m\u001b[96m \u001b[39m\u001b[94m  \u001b[39m\u001b[36m \u001b[39m\u001b[31m█▄█\u001b[39m\u001b[92m \u001b[39m\u001b[35m█▀▄\u001b[39m\u001b[35m \u001b[39m\u001b[33m█\u001b[39m\u001b[32m \u001b[39m\u001b[35m█▄▀\u001b[39m\u001b[33m \u001b[39m\u001b[92m█▄█\u001b[39m\u001b[93m \u001b[39m\u001b[93m██▄\u001b[39m\n";
 
 export function renderBanner(): void {
-  const result = cfonts.render('vsix-bridge', {
-    font: 'tiny',
-    colors: ['candy'],
-    space: false,
-  });
-  if (result) {
-    console.log(result.string);
-  }
+  console.log(BANNER);
 }
 
 export function renderInfo(pkg: { name: string; version: string; description?: string }): void {

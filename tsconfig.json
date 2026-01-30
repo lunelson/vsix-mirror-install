@@ -8,6 +8,6 @@
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "*.config.ts", "*.config.js"],
   "exclude": ["node_modules", "dist"]
 }

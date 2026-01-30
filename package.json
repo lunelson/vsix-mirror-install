@@ -60,7 +60,6 @@
   },
   "dependencies": {
     "@clack/prompts": "^0.10.0",
-    "cfonts": "^3.3.1",
     "semver": "^7.7.0",
     "update-notifier": "^7.3.1"
   }
