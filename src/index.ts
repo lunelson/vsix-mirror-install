@@ -51,7 +51,7 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
 
 function showHelp(): void {
   console.log(`
-vsix-bridge - Sync VS Code extensions to fork IDEs
+vsix-bridge-cli - Sync VS Code extensions to fork IDEs
 
 Usage:
   vsix-bridge <command> [options]
@@ -109,8 +109,7 @@ async function main(): Promise<void> {
 }
 
 const isMainModule =
-  import.meta.url === `file://${process.argv[1]}` ||
-  process.argv[1]?.endsWith('/vsix-bridge');
+  import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('/vsix-bridge');
 
 if (isMainModule) {
   main().catch((err) => {

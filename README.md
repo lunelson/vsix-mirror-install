@@ -1,4 +1,4 @@
-# vsix-bridge
+# vsix-bridge-cli
 
 Sync VS Code extensions to fork IDEs (Cursor, Antigravity, Windsurf) by downloading compatible versions from the official Microsoft Marketplace.
 
@@ -9,12 +9,12 @@ VS Code forks often use OpenVSIX or custom registries that may:
 - Miss extensions entirely
 - Contain poorly vetted packages
 
-**vsix-bridge** uses your local VS Code installation as the source of truth, downloads the exact compatible versions, and installs them into fork IDEs.
+**vsix-bridge-cli** uses your local VS Code installation as the source of truth, downloads the exact compatible versions, and installs them into fork IDEs.
 
 ## Installation
 
 ```sh
-npm install -g vsix-bridge
+npm install -g vsix-bridge-cli
 ```
 
 ## Usage
@@ -59,21 +59,21 @@ vsix-bridge install --dry-run       # Preview without making changes
 
 **Flags:**
 
-| Flag | Description |
-|------|-------------|
+| Flag                | Description                                             |
+| ------------------- | ------------------------------------------------------- |
 | `--install-missing` | Install extensions not present in fork (but in VS Code) |
-| `--sync-removals` | Uninstall extensions in fork that aren't in VS Code |
-| `--sync-disabled` | Match VS Code's disabled extension state |
-| `--force` | Enable all of the above (full sync) |
-| `--dry-run` | Show what would be done without doing it |
+| `--sync-removals`   | Uninstall extensions in fork that aren't in VS Code     |
+| `--sync-disabled`   | Match VS Code's disabled extension state                |
+| `--force`           | Enable all of the above (full sync)                     |
+| `--dry-run`         | Show what would be done without doing it                |
 
 ## Supported IDEs
 
-| IDE | CLI | Detected From |
-|-----|-----|---------------|
-| Cursor | `cursor` | `/Applications/Cursor.app` |
-| Antigravity | `agy` | `/Applications/Antigravity.app` |
-| Windsurf | `surf` | `/Applications/Windsurf.app` |
+| IDE         | CLI      | Detected From                   |
+| ----------- | -------- | ------------------------------- |
+| Cursor      | `cursor` | `/Applications/Cursor.app`      |
+| Antigravity | `agy`    | `/Applications/Antigravity.app` |
+| Windsurf    | `surf`   | `/Applications/Windsurf.app`    |
 
 ## Storage
 

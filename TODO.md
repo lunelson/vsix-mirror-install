@@ -1,7 +1,7 @@
-# vsix-bridge Future Ideas
+# vsix-bridge-cli Future Ideas
 
 ## Performance
-- [ ] Batch marketplace API calls (multiple extensions per request) — API supports it, could reduce HTTP overhead
+- [ ] Batch/pool marketplace API calls (multiple extensions per request) — API supports it, could reduce HTTP overhead
 - [ ] Retry logic with exponential backoff for transient network failures
 
 ## Platform Support

@@ -1,5 +1,5 @@
 {
-  "name": "vsix-bridge",
+  "name": "vsix-bridge-cli",
   "version": "0.1.0",
   "description": "Sync VS Code extensions to fork IDEs (Cursor, Antigravity, Windsurf)",
   "type": "module",
