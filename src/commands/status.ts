@@ -23,10 +23,7 @@ interface ExtensionDiff {
   }>;
 }
 
-function computeDiff(
-  vscodeExts: Extension[],
-  forkExts: Extension[]
-): ExtensionDiff {
+function computeDiff(vscodeExts: Extension[], forkExts: Extension[]): ExtensionDiff {
   const vscodeMap = new Map(vscodeExts.map((e) => [e.id, e]));
   const forkMap = new Map(forkExts.map((e) => [e.id, e]));
 
@@ -68,7 +65,7 @@ function computeDiff(
 
 async function selectTargetIDE(targetIDEs: DetectedIDE[]): Promise<DetectedIDE | null> {
   if (targetIDEs.length === 1) {
-    return targetIDEs[0];
+    return targetIDEs[0] ?? null;
   }
 
   const selected = await p.select({

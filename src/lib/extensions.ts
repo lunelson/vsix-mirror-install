@@ -44,10 +44,7 @@ export function getDisabledExtensions(dataFolderName: string): Set<string> {
   }
 }
 
-export function getExtensionsWithState(
-  cli: string,
-  dataFolderName: string
-): Extension[] {
+export function getExtensionsWithState(cli: string, dataFolderName: string): Extension[] {
   const extensions = listInstalledExtensions(cli);
   const disabledSet = getDisabledExtensions(dataFolderName);
 

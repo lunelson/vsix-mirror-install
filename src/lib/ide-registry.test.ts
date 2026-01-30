@@ -47,25 +47,19 @@ describe('ide-registry', () => {
   describe('getProductJsonPath', () => {
     it('returns correct path for macOS app bundle', () => {
       const path = getProductJsonPath('/Applications/Cursor.app');
-      expect(path).toBe(
-        '/Applications/Cursor.app/Contents/Resources/app/product.json'
-      );
+      expect(path).toBe('/Applications/Cursor.app/Contents/Resources/app/product.json');
     });
   });
 
   describe('getSettingsPath', () => {
     it('returns correct settings path for IDE', () => {
       const path = getSettingsPath('Cursor');
-      expect(path).toBe(
-        `${homedir()}/Library/Application Support/Cursor/User/settings.json`
-      );
+      expect(path).toBe(`${homedir()}/Library/Application Support/Cursor/User/settings.json`);
     });
 
     it('handles VS Code data folder name', () => {
       const path = getSettingsPath('Code');
-      expect(path).toBe(
-        `${homedir()}/Library/Application Support/Code/User/settings.json`
-      );
+      expect(path).toBe(`${homedir()}/Library/Application Support/Code/User/settings.json`);
     });
   });
 

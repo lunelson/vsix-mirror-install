@@ -45,13 +45,11 @@ describe('extensions', () => {
       vi.mocked(execSync).mockReturnValue('EsbenP.Prettier-VSCode@10.1.0\n');
 
       const extensions = listInstalledExtensions('code');
-      expect(extensions[0].id).toBe('esbenp.prettier-vscode');
+      expect(extensions[0]?.id).toBe('esbenp.prettier-vscode');
     });
 
     it('skips lines without @', () => {
-      vi.mocked(execSync).mockReturnValue(
-        'some-header\nesbenp.prettier-vscode@10.1.0\n'
-      );
+      vi.mocked(execSync).mockReturnValue('some-header\nesbenp.prettier-vscode@10.1.0\n');
 
       const extensions = listInstalledExtensions('code');
       expect(extensions).toHaveLength(1);

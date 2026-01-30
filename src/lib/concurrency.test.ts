@@ -5,11 +5,7 @@ describe('concurrency', () => {
   describe('mapWithConcurrency', () => {
     it('processes all items', async () => {
       const items = [1, 2, 3, 4, 5];
-      const results = await mapWithConcurrency(
-        items,
-        async (n) => n * 2,
-        2
-      );
+      const results = await mapWithConcurrency(items, async (n) => n * 2, 2);
       expect(results).toEqual([2, 4, 6, 8, 10]);
     });
 

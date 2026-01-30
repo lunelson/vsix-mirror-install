@@ -64,7 +64,7 @@ function updateDisabledExtensions(
 
 async function selectTargetIDE(targetIDEs: DetectedIDE[]): Promise<DetectedIDE | null> {
   if (targetIDEs.length === 1) {
-    return targetIDEs[0];
+    return targetIDEs[0] ?? null;
   }
 
   const selected = await p.select({
@@ -163,17 +163,10 @@ export async function runInstall(options: InstallOptions): Promise<void> {
     switch (action.type) {
       case 'install':
       case 'update':
-        ok = executeCliCommand(targetIDE.cli, [
-          '--install-extension',
-          action.vsixPath!,
-          '--force',
-        ]);
+        ok = executeCliCommand(targetIDE.cli, ['--install-extension', action.vsixPath!, '--force']);
         break;
       case 'uninstall':
-        ok = executeCliCommand(targetIDE.cli, [
-          '--uninstall-extension',
-          action.extensionId,
-        ]);
+        ok = executeCliCommand(targetIDE.cli, ['--uninstall-extension', action.extensionId]);
         break;
       case 'disable':
         toDisable.push(action.extensionId);

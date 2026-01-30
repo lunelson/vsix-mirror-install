@@ -54,19 +54,19 @@ export async function fetchExtensionMetadata(
 
     const data = (await response.json()) as MarketplaceResponse;
     const results = data.results ?? [];
-    if (!results.length || !results[0].extensions?.length) {
+    const firstResult = results[0];
+    if (!results.length || !firstResult?.extensions?.length) {
       return null;
     }
 
-    const ext = results[0].extensions[0];
+    const ext = firstResult.extensions[0];
+    if (!ext) return null;
     const publisher = ext.publisher.publisherName;
     const name = ext.extensionName;
     const versions: MarketplaceVersion[] = [];
 
     for (const v of ext.versions ?? []) {
-      const engineProp = v.properties?.find(
-        (p) => p.key === 'Microsoft.VisualStudio.Code.Engine'
-      );
+      const engineProp = v.properties?.find((p) => p.key === 'Microsoft.VisualStudio.Code.Engine');
       const engineSpec = engineProp?.value ?? '*';
 
       let vsixUrl: string | null = null;
@@ -103,13 +103,10 @@ export function parseExtensionId(extensionId: string): {
   publisher: string;
   name: string;
 } {
-  const [publisher, name] = extensionId.split('.');
+  const [publisher = '', name = ''] = extensionId.split('.');
   return { publisher, name };
 }
 
-export function getVsixFilename(
-  extensionId: string,
-  version: string
-): string {
+export function getVsixFilename(extensionId: string, version: string): string {
   return `${extensionId.toLowerCase()}-${version}.vsix`;
 }

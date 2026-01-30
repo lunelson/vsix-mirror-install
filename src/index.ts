@@ -1,11 +1,18 @@
 import * as p from '@clack/prompts';
 import { parseArgs } from 'node:util';
+import { createRequire } from 'node:module';
+import { renderBanner, renderInfo } from './lib/banner.js';
+import { checkForUpdates } from './lib/update.js';
+import { ensureInitialized, runOnboarding } from './lib/onboarding.js';
 import { runSync } from './commands/sync.js';
 import { runInstall } from './commands/install.js';
 import { runStatus } from './commands/status.js';
 import { runDetect } from './commands/detect.js';
 
-const COMMANDS = ['sync', 'install', 'status', 'detect'] as const;
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
+
+const COMMANDS = ['sync', 'install', 'status', 'detect', 'init'] as const;
 type Command = (typeof COMMANDS)[number];
 
 interface ParsedArgs {
@@ -17,6 +24,7 @@ interface ParsedArgs {
   syncRemovals: boolean;
   syncDisabled: boolean;
   help: boolean;
+  quiet: boolean;
 }
 
 export function parseCliArgs(argv: string[]): ParsedArgs {
@@ -30,6 +38,7 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
       'sync-removals': { type: 'boolean', default: false },
       'sync-disabled': { type: 'boolean', default: false },
       help: { type: 'boolean', short: 'h', default: false },
+      quiet: { type: 'boolean', short: 'q', default: false },
     },
     allowPositionals: true,
   });
@@ -46,12 +55,13 @@ export function parseCliArgs(argv: string[]): ParsedArgs {
     syncRemovals: values['sync-removals'] ?? false,
     syncDisabled: values['sync-disabled'] ?? false,
     help: values.help ?? false,
+    quiet: values.quiet ?? false,
   };
 }
 
 function showHelp(): void {
   console.log(`
-vsix-bridge-cli - Sync VS Code extensions to fork IDEs
+vsix-bridge - Sync VS Code extensions to fork IDEs
 
 Usage:
   vsix-bridge <command> [options]
@@ -61,6 +71,7 @@ Commands:
   install   Install synced VSIX files into target IDEs
   status    Show extension diff between VS Code and forks
   detect    Auto-detect installed IDEs and their configuration
+  init      Initialize vsix-bridge configuration
 
 Options:
   --to <ide>         Target IDE(s) (cursor, antigravity, windsurf)
@@ -69,6 +80,7 @@ Options:
   --sync-removals    Uninstall extensions in fork not in VS Code
   --sync-disabled    Match VS Code's disabled state in fork
   --force            Enable all sync options (full sync)
+  -q, --quiet        Suppress banner output
   -h, --help         Show this help message
 `);
 }
@@ -76,10 +88,24 @@ Options:
 async function main(): Promise<void> {
   const args = parseCliArgs(process.argv.slice(2));
 
+  if (!args.quiet && !args.help) {
+    renderBanner();
+    renderInfo(pkg);
+  }
+
+  checkForUpdates(pkg).catch(() => {});
+
   if (args.help || !args.command) {
     showHelp();
     process.exit(args.help ? 0 : 1);
   }
+
+  if (args.command === 'init') {
+    await runOnboarding({ isRerun: true });
+    return;
+  }
+
+  await ensureInitialized();
 
   p.intro('vsix-bridge');
 

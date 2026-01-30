@@ -5,6 +5,7 @@ Sync VS Code extensions to fork IDEs (Cursor, Antigravity, Windsurf) by download
 ## Why?
 
 VS Code forks often use OpenVSIX or custom registries that may:
+
 - Lag behind official Microsoft Marketplace updates
 - Miss extensions entirely
 - Contain poorly vetted packages
@@ -45,6 +46,7 @@ vsix-bridge status --to cursor      # Compare with Cursor specifically
 ```
 
 Shows:
+
 - Extensions in VS Code but not in fork
 - Extensions in fork but not in VS Code
 - Version differences

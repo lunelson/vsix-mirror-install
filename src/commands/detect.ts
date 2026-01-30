@@ -29,9 +29,7 @@ export async function runDetect(): Promise<void> {
     p.log.step(`  Path: ${ide.appPath}`);
 
     if (!ide.cliAvailable) {
-      p.log.warn(
-        `  Run "Shell Command: Install '${ide.cli}' command in PATH" from ${ide.name}`
-      );
+      p.log.warn(`  Run "Shell Command: Install '${ide.cli}' command in PATH" from ${ide.name}`);
     }
     console.log('');
   }

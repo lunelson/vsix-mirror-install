@@ -98,9 +98,9 @@ describe('marketplace', () => {
       expect(result?.publisher).toBe('testpub');
       expect(result?.name).toBe('testname');
       expect(result?.versions).toHaveLength(1);
-      expect(result?.versions[0].version).toBe('1.0.0');
-      expect(result?.versions[0].engineSpec).toBe('^1.104.0');
-      expect(result?.versions[0].vsixUrl).toBe('https://example.com/test.vsix');
+      expect(result?.versions[0]?.version).toBe('1.0.0');
+      expect(result?.versions[0]?.engineSpec).toBe('^1.104.0');
+      expect(result?.versions[0]?.vsixUrl).toBe('https://example.com/test.vsix');
     });
 
     it('uses fallback URL when no VSIX file in response', async () => {
@@ -128,9 +128,9 @@ describe('marketplace', () => {
       });
 
       const result = await fetchExtensionMetadata('testpub.testname');
-      expect(result?.versions[0].vsixUrl).toContain('testpub');
-      expect(result?.versions[0].vsixUrl).toContain('testname');
-      expect(result?.versions[0].vsixUrl).toContain('1.0.0');
+      expect(result?.versions[0]?.vsixUrl).toContain('testpub');
+      expect(result?.versions[0]?.vsixUrl).toContain('testname');
+      expect(result?.versions[0]?.vsixUrl).toContain('1.0.0');
     });
 
     it('defaults to * engine spec when property missing', async () => {
@@ -158,7 +158,7 @@ describe('marketplace', () => {
       });
 
       const result = await fetchExtensionMetadata('testpub.testname');
-      expect(result?.versions[0].engineSpec).toBe('*');
+      expect(result?.versions[0]?.engineSpec).toBe('*');
     });
   });
 });

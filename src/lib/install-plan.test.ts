@@ -12,9 +12,7 @@ describe('install-plan', () => {
 
   describe('generateInstallPlan', () => {
     it('returns empty plan when no actions needed', () => {
-      const installed: Extension[] = [
-        { id: 'test.ext', version: '1.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [
         { extensionId: 'test.ext', version: '1.0.0', path: '/path', sourceDisabled: false },
       ];
@@ -53,9 +51,7 @@ describe('install-plan', () => {
     });
 
     it('updates outdated extensions', () => {
-      const installed: Extension[] = [
-        { id: 'test.ext', version: '1.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [
         { extensionId: 'test.ext', version: '2.0.0', path: '/path', sourceDisabled: false },
       ];
@@ -71,9 +67,7 @@ describe('install-plan', () => {
     });
 
     it('does not downgrade newer extensions', () => {
-      const installed: Extension[] = [
-        { id: 'test.ext', version: '2.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'test.ext', version: '2.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [
         { extensionId: 'test.ext', version: '1.0.0', path: '/path', sourceDisabled: false },
       ];
@@ -83,9 +77,7 @@ describe('install-plan', () => {
     });
 
     it('skips removals by default', () => {
-      const installed: Extension[] = [
-        { id: 'orphan.ext', version: '1.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'orphan.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [];
 
       const plan = generateInstallPlan(installed, synced, defaultOptions);
@@ -93,9 +85,7 @@ describe('install-plan', () => {
     });
 
     it('uninstalls orphaned extensions with --sync-removals', () => {
-      const installed: Extension[] = [
-        { id: 'orphan.ext', version: '1.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'orphan.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [];
 
       const plan = generateInstallPlan(installed, synced, {
@@ -111,9 +101,7 @@ describe('install-plan', () => {
     });
 
     it('disables extensions with --sync-disabled', () => {
-      const installed: Extension[] = [
-        { id: 'test.ext', version: '1.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [
         { extensionId: 'test.ext', version: '1.0.0', path: '/path', sourceDisabled: true },
       ];
@@ -131,9 +119,7 @@ describe('install-plan', () => {
     });
 
     it('enables extensions with --sync-disabled', () => {
-      const installed: Extension[] = [
-        { id: 'test.ext', version: '1.0.0', disabled: true },
-      ];
+      const installed: Extension[] = [{ id: 'test.ext', version: '1.0.0', disabled: true }];
       const synced: SyncedVSIX[] = [
         { extensionId: 'test.ext', version: '1.0.0', path: '/path', sourceDisabled: false },
       ];
@@ -151,9 +137,7 @@ describe('install-plan', () => {
     });
 
     it('--force enables all options', () => {
-      const installed: Extension[] = [
-        { id: 'existing.ext', version: '1.0.0', disabled: false },
-      ];
+      const installed: Extension[] = [{ id: 'existing.ext', version: '1.0.0', disabled: false }];
       const synced: SyncedVSIX[] = [
         { extensionId: 'new.ext', version: '1.0.0', path: '/new', sourceDisabled: true },
       ];
@@ -182,8 +166,8 @@ describe('install-plan', () => {
       });
 
       expect(plan).toHaveLength(2);
-      expect(plan[0].type).toBe('install');
-      expect(plan[1].type).toBe('disable');
+      expect(plan[0]?.type).toBe('install');
+      expect(plan[1]?.type).toBe('disable');
     });
   });
 

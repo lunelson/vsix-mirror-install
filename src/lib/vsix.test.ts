@@ -8,8 +8,7 @@ vi.mock('./storage.js', () => ({
 
 vi.mock('./marketplace.js', () => ({
   getVsixFilename: vi.fn(
-    (extensionId: string, version: string) =>
-      `${extensionId.toLowerCase()}-${version}.vsix`
+    (extensionId: string, version: string) => `${extensionId.toLowerCase()}-${version}.vsix`
   ),
 }));
 

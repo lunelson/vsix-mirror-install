@@ -3,10 +3,12 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
-  dts: true,
+  target: 'node18',
+  outDir: 'dist',
   clean: true,
+  splitting: false,
   sourcemap: true,
-  target: 'node20',
+  dts: false,
   shims: true,
   banner: {
     js: '#!/usr/bin/env node',

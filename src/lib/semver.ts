@@ -4,10 +4,7 @@ export function parseVersion(version: string): semver.SemVer | null {
   return semver.parse(version);
 }
 
-export function satisfiesEngineSpec(
-  engineVersion: string,
-  engineSpec: string
-): boolean {
+export function satisfiesEngineSpec(engineVersion: string, engineSpec: string): boolean {
   if (engineSpec === '*') {
     return true;
   }

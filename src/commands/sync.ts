@@ -4,12 +4,7 @@ import { detectAllIDEs, detectVSCode } from '../lib/ide-registry.js';
 import { getExtensionsWithState } from '../lib/extensions.js';
 import { fetchExtensionMetadata } from '../lib/marketplace.js';
 import { satisfiesEngineSpec, compareVersions } from '../lib/semver.js';
-import {
-  downloadVsix,
-  getVsixPath,
-  ensureVsixCacheDir,
-  cleanupStaleVsix,
-} from '../lib/vsix.js';
+import { downloadVsix, getVsixPath, ensureVsixCacheDir, cleanupStaleVsix } from '../lib/vsix.js';
 import { getVsixFilename } from '../lib/marketplace.js';
 import { mapWithConcurrency } from '../lib/concurrency.js';
 
@@ -37,9 +32,7 @@ function findCompatibleVersion(
   versions: MarketplaceVersion[],
   engineVersion: string
 ): MarketplaceVersion | null {
-  const sorted = [...versions].sort((a, b) =>
-    compareVersions(b.version, a.version)
-  );
+  const sorted = [...versions].sort((a, b) => compareVersions(b.version, a.version));
 
   for (const v of sorted) {
     if (satisfiesEngineSpec(engineVersion, v.engineSpec)) {
@@ -105,7 +98,7 @@ export async function runSync(options: SyncOptions): Promise<void> {
   }
 
   const spinner = p.spinner();
-  
+
   spinner.start(`Fetching metadata for ${extensions.length} extensions...`);
 
   let fetchedCount = 0;
@@ -141,16 +134,14 @@ export async function runSync(options: SyncOptions): Promise<void> {
     }
 
     for (let i = 0; i < targetIDEs.length; i++) {
-      const ide = targetIDEs[i];
+      const ide = targetIDEs[i]!;
+      const result = results[i]!;
       const expectedFiles = expectedFilesByIde.get(ide.id)!;
 
-      const compatible = findCompatibleVersion(
-        metadata.versions,
-        ide.engineVersion
-      );
+      const compatible = findCompatibleVersion(metadata.versions, ide.engineVersion);
 
       if (!compatible || !compatible.vsixUrl) {
-        results[i].skipped++;
+        result.skipped++;
         continue;
       }
 
@@ -170,18 +161,19 @@ export async function runSync(options: SyncOptions): Promise<void> {
       downloadedCount++;
       spinner.message(`Downloaded ${downloadedCount}/${downloadTasks.length}`);
 
+      const result = results[task.ideIndex]!;
       if (success) {
-        results[task.ideIndex].synced++;
+        result.synced++;
       } else {
-        results[task.ideIndex].failed++;
+        result.failed++;
       }
     },
     concurrency
   );
 
   for (let i = 0; i < targetIDEs.length; i++) {
-    const ide = targetIDEs[i];
-    const result = results[i];
+    const ide = targetIDEs[i]!;
+    const result = results[i]!;
     const expectedFiles = expectedFilesByIde.get(ide.id)!;
     const removed = cleanupStaleVsix(ide.id, expectedFiles);
     result.cleaned = removed.length;

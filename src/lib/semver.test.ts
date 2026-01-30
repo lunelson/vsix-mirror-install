@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  parseVersion,
-  satisfiesEngineSpec,
-  compareVersions,
-  isNewerVersion,
-} from './semver.js';
+import { parseVersion, satisfiesEngineSpec, compareVersions, isNewerVersion } from './semver.js';
 
 describe('semver', () => {
   describe('parseVersion', () => {

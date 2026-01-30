@@ -53,20 +53,10 @@ export function getProductJsonPath(appPath: string): string {
 }
 
 export function getSettingsPath(dataFolderName: string): string {
-  return join(
-    homedir(),
-    'Library',
-    'Application Support',
-    dataFolderName,
-    'User',
-    'settings.json'
-  );
+  return join(homedir(), 'Library', 'Application Support', dataFolderName, 'User', 'settings.json');
 }
 
-export function readEngineVersion(
-  appPath: string,
-  versionKey: string
-): string | null {
+export function readEngineVersion(appPath: string, versionKey: string): string | null {
   const productJsonPath = getProductJsonPath(appPath);
   if (!existsSync(productJsonPath)) {
     return null;

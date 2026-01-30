@@ -78,13 +78,7 @@ describe('parseCliArgs', () => {
   });
 
   it('parses combined flags', () => {
-    const args = parseCliArgs([
-      'install',
-      '--to',
-      'cursor',
-      '--force',
-      '--dry-run',
-    ]);
+    const args = parseCliArgs(['install', '--to', 'cursor', '--force', '--dry-run']);
     expect(args.command).toBe('install');
     expect(args.to).toEqual(['cursor']);
     expect(args.force).toBe(true);

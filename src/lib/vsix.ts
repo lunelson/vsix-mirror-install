@@ -6,10 +6,7 @@ import { ensureDir, getVsixCacheDir } from './storage.js';
 import { getVsixFilename } from './marketplace.js';
 import type { SyncedVSIX } from '../types.js';
 
-export async function downloadVsix(
-  url: string,
-  destPath: string
-): Promise<boolean> {
+export async function downloadVsix(url: string, destPath: string): Promise<boolean> {
   if (existsSync(destPath)) {
     return true;
   }
@@ -50,7 +47,7 @@ export function listCachedVsix(ideId: string): SyncedVSIX[] {
 
   for (const file of files) {
     const match = file.match(/^(.+)-(\d+\.\d+\.\d+.*)\.vsix$/);
-    if (match) {
+    if (match?.[1] && match[2]) {
       result.push({
         extensionId: match[1],
         version: match[2],
@@ -63,10 +60,7 @@ export function listCachedVsix(ideId: string): SyncedVSIX[] {
   return result;
 }
 
-export function cleanupStaleVsix(
-  ideId: string,
-  expectedFiles: Set<string>
-): string[] {
+export function cleanupStaleVsix(ideId: string, expectedFiles: Set<string>): string[] {
   const cacheDir = getVsixCacheDir(ideId);
   if (!existsSync(cacheDir)) {
     return [];
@@ -90,7 +84,7 @@ export function parseVsixFilename(
   filename: string
 ): { extensionId: string; version: string } | null {
   const match = filename.match(/^(.+)-(\d+\.\d+\.\d+.*)\.vsix$/);
-  if (!match) {
+  if (!match?.[1] || !match[2]) {
     return null;
   }
   return {
